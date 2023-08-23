@@ -17,9 +17,10 @@ class NewsListView: UIView {
         translatesAutoresizingMaskIntoConstraints = false
         setUpView()
         
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        tableView.register(NewsTableViewCell.self, forCellReuseIdentifier: NewsTableViewCell.cellIdentifier)
         tableView.dataSource = viewModel
         tableView.delegate = viewModel
+    
     }
     
     func setUpView() {

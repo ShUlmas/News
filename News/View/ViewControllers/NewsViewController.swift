@@ -10,17 +10,20 @@ import UIKit
 class NewsViewController: UIViewController {
 
     private let listView = NewsListView()
-    
+    private let listViewViewModel = NewsListViewViewModel()
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpView()
         setUpLayout()
+        listViewViewModel.fetchArticles()
     }
     
     func setUpView() {
         view.backgroundColor = .systemBackground
         title = "News"
         navigationController?.navigationBar.prefersLargeTitles = true
+        
+        
     }
     
     private func setUpLayout() {

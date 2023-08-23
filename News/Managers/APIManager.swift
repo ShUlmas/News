@@ -16,7 +16,7 @@ final class APIManager {
     }
     
     
-    public func getNews(completion: @escaping(Result<[String], Error>) -> Void) {
+    public func getNews(completion: @escaping(Result<[Article], Error>) -> Void) {
         guard let url = Constants.baseUrl else { return }
         
         let task = URLSession.shared.dataTask(with: url) { data, response, error in
@@ -27,8 +27,8 @@ final class APIManager {
             
             if let data = data {
                 do {
-                    let response = try JSONDecoder().decode(NewsModel.self, from: data)
-                    print("\(response.articles.count)")
+                    let result = try JSONDecoder().decode(NewsModel.self, from: data)
+                    completion(.success(result.articles))
                 } catch {
                     completion(.failure(error))
                 }
