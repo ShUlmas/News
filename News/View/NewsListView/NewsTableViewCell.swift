@@ -16,7 +16,7 @@ class NewsTableViewCell: UITableViewCell {
         lbl.font = UIFont.systemFont(ofSize: 22, weight: .bold)
         lbl.textColor = .label
         lbl.translatesAutoresizingMaskIntoConstraints = false
-        lbl.numberOfLines = 1
+        lbl.numberOfLines = 2
         return lbl
     }()
     
@@ -25,13 +25,13 @@ class NewsTableViewCell: UITableViewCell {
         lbl.font = UIFont.systemFont(ofSize: 17, weight: .regular)
         lbl.textColor = .secondaryLabel
         lbl.translatesAutoresizingMaskIntoConstraints = false
-        lbl.numberOfLines = 1
+        lbl.numberOfLines = 4
         return lbl
     }()
     
     private let imgView: UIImageView = {
         let imgV = UIImageView()
-        imgV.contentMode = .scaleAspectFit
+        imgV.contentMode = .scaleToFill
         imgV.layer.cornerRadius = 10
         imgV.translatesAutoresizingMaskIntoConstraints = false
         return imgV
@@ -50,16 +50,21 @@ class NewsTableViewCell: UITableViewCell {
     
     private func addConstraint() {
         NSLayoutConstraint.activate([
-            titleLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 12),
-            titleLabel.leftAnchor.constraint(equalTo: contentView.leftAnchor, constant: 12),
+            imgView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 20),
+            imgView.leftAnchor.constraint(equalTo: contentView.leftAnchor, constant: 20),
+            imgView.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: -20),
+            imgView.heightAnchor.constraint(equalToConstant: 200),
             
-            descLabel.leftAnchor.constraint(equalTo: contentView.leftAnchor, constant: 12),
-            descLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -12),
             
-            imgView.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: -12),
-            imgView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            imgView.widthAnchor.constraint(equalToConstant: 80),
-            imgView.heightAnchor.constraint(equalToConstant: 80)
+            titleLabel.topAnchor.constraint(equalTo: imgView.bottomAnchor, constant: 20),
+            titleLabel.centerXAnchor.constraint(equalTo: imgView.centerXAnchor),
+            titleLabel.leftAnchor.constraint(equalTo: contentView.leftAnchor, constant: 20),
+            titleLabel.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: -20),
+            
+            descLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 12),
+            descLabel.centerXAnchor.constraint(equalTo: imgView.centerXAnchor),
+            descLabel.leftAnchor.constraint(equalTo: contentView.leftAnchor, constant: 20),
+            descLabel.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: -20),
         ])
     }
     
@@ -70,7 +75,12 @@ class NewsTableViewCell: UITableViewCell {
         if let imageData = viewModel.imageData {
             imgView.image = UIImage(data: imageData)
         } else {
-            //fetch
+            guard let url = viewModel.imageUrl else { return }
+            ImageLoader.shared.loadImage(from: url) { image in
+                DispatchQueue.main.async {
+                    self.imgView.image = image
+                }
+            }
         }
     }
     
